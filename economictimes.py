@@ -24,7 +24,7 @@ def get_page_from_url(year: int , month: int , time: int , date: int = 1):
 	
 	if response.status_code == 200:
 		links = extract_links_from_html(response.text)
-		print("Total Number of links is %d and year, month, date is %d , %d , %d" % (len(links), year , month , date))
+		print("Total Number of links is %d and year, month, date and time is %d , %d , %d , %d" % (len(links), year , month , date , time))
 		for link in links:
 			# print(newspaper+link)
 			#instead of priniting, we will store the links in a csv file
@@ -38,9 +38,9 @@ def get_page_from_url(year: int , month: int , time: int , date: int = 1):
 def leap(year: int) -> bool:
 	return (year % 400 == 0) or (year % 4 == 0 and year % 100 != 0)
 
-year = 2001
+year = 2008
 month = 1
-start_time = 36892 # 1st Jan 2001
+start_time = 39448 # 1st Jan 2007
 end_time = 45456 # 13th June 2024
 
 x = {
@@ -63,7 +63,19 @@ def get_all_pages(start_time: int , end_time: int , year: int , month: int) -> N
 	for time in range(start_time, end_time):
 		get_page_from_url(year , month , time , date)
 		date += 1
-		if((month == 2 and leap(year) and date == 29) or (date == x[month]+1)):
+		if((not leap(year) and date == x[month]+1)):
+			date = 1
+			month += 1
+			if(month == 13):
+				month = 1
+				year += 1
+		elif leap(year) and month == 2 and date == 30:
+			date = 1
+			month += 1
+			if(month == 13):
+				month = 1
+				year += 1
+		elif leap(year) and month != 2 and date == x[month]+1:
 			date = 1
 			month += 1
 			if(month == 13):
@@ -71,7 +83,7 @@ def get_all_pages(start_time: int , end_time: int , year: int , month: int) -> N
 				year += 1
 
 
-# get_page_from_url(2023, 1, 44928)
+# get_page_from_url(year= year, month=month, time= start_time)
 
-get_all_pages(37438, end_time, 2002, 7) #done till 14/6/2009
+get_all_pages(start_time, end_time, year, month)
 
