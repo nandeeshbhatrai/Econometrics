@@ -7,7 +7,7 @@ def extract_links_from_html(page_html: str) -> list:
 	soup = bs(page_html, 'html.parser')
 	li_tags = soup.find_all('li')
 	links = []
-	for li in li_tags:
+	for li in li_tags:	
 		for a_tag in li.find_all('a'):
 			if a_tag['href'] != '#':
 				links.append(a_tag['href'])
